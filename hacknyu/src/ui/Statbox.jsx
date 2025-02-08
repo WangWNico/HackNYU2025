@@ -6,6 +6,12 @@ function Statbox() {
     const [attack, setAttack]=useState(2);
     const [moveSpeed, setMoveSpeed]=useState(2);
 
+    useEffect(
+        ()=> {
+            
+        }
+    )
+
   return (
     <div className={styles.container}>
         Stats

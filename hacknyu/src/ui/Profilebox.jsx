@@ -12,10 +12,10 @@ const ProfileBox = ({ gender }) => {
 
             if (gender === "male") {
                 pfp.current.classList.add(styles.male);
-
+                
             } else if (gender === "female") {
                 pfp.current.classList.add(styles.female);
-
+                
             }
         }
     }, [gender]);

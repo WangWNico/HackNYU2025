@@ -7,6 +7,8 @@ function UserInterface() {
     <>
       <div className={styles.container}>
         <CustomResponse />
+        <Profilebox />
+       {/*<Statbox />*/}
       </div>
     </>
   )
