@@ -1,15 +1,15 @@
 .optionsBox {
-    width: 50%;
+    width: 75%;
     margin: 20px auto;
 }
 
 .options {
     display: flex;
-    margin-bottom: 20px;
-    justify-content: space-around;
-  }
+    justify-content: space-between;
+}
 
 .optionButton {
+    flex-basis: 30%;
     padding: 10px 20px;
     font-size: 16px;
     border: none;
@@ -17,6 +17,8 @@
     color: white;
     cursor: pointer;
     border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .optionButton:hover {
