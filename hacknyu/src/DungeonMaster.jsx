@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { getGeminiResponse, getInitialRPGPrompt } from "./network/geminiApi";
 import StoryBox from './ui/Storybox';
 import OptionsBox from './ui/Optionsbox';
+import CustomResponse from './ui/CustomResponse';
 import './DungeonMaster.css';
 
-function DungeonMaster() { // Renamed for clarity
-    const [response, setResponse] = useState("Welcome Adventurers..."); // Initial text
+function DungeonMaster() {
+    const [response, setResponse] = useState("Welcome Adventurers...");
     const [initialResponseLoaded, setInitialResponseLoaded] = useState(false);
     const [choices, setChoices] = useState([]);
+    const [customInput, setCustomInput] = useState(""); // State for custom input
 
     useEffect(() => {
         const loadInitialResponse = async () => {
@@ -28,11 +30,21 @@ function DungeonMaster() { // Renamed for clarity
         setChoices(aiResponse.choices);
     };
 
+    const handleCustomResponseSubmit = async () => {
+        if (!customInput) return;
+
+        const aiResponse = await getGeminiResponse(customInput);
+        setResponse(aiResponse.text);
+        setChoices(aiResponse.choices);
+        setCustomInput("");
+    };
+
     return (
         <div>
             <h1>AI Dungeon Master</h1>
-            <StoryBox text={response} /> {/* Pass response to StoryBox as prop */}
-            <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} /> {/* Pass choices and click handler */}
+            <StoryBox text={response} />
+            <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
+            <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
         </div>
     );
 }
