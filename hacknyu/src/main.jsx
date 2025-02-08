@@ -7,9 +7,7 @@ import App from './App.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <>
-      <div style={{ color: 'white' }}>Debug: App Component</div>
       <App />
-      <div style={{ color: 'white' }}>Debug: DungeonMasterTest Component</div>
       <DungeonMasterTest />
     </>
   </StrictMode>
