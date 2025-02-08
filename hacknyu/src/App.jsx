@@ -1,8 +1,9 @@
 import React from 'react'
+import UserInterface from './ui/UserInterface'
 
 const App = () => {
   return (
-    <div>App</div>
+    <div><UserInterface />App</div>
   )
 }
 
