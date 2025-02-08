@@ -7,9 +7,11 @@ import CustomResponse from './CustomResponse.jsx'
 function UserInterface() {
   return (
     <>
-      <Storybox />
-      <Optionsbox />
-      <CustomResponse />
+      <div className={styles.container}>
+        <Storybox />
+        <Optionsbox />
+        <CustomResponse />
+      </div>
     </>
   )
 }
