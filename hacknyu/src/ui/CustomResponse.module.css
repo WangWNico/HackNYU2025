@@ -1,0 +1,46 @@
+.container {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Arrange elements vertically */
+    align-items: center; /* Center horizontally */
+    width: 50%; /* Or a specific pixel width like 600px */
+    margin: 20px auto; /* Center the container on the page */
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+
+.textBox {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.textArea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    resize: none;
+    box-sizing: border-box; /* Include padding and border in width */
+    overflow-y: auto;
+    border-radius: 20px;
+}
+
+.optionButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.optionButton:hover {
+    background-color: #0056b3;
+}
+
+p {
+    margin-top: 10px;
+    width: 100%;
+    text-align: left;
+    word-wrap: break-word;
+}
