@@ -13,9 +13,6 @@ function DungeonMasterTest() {
     return (
         <div>
             <h1>AI Dungeon Master</h1>
-            <textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder="Enter your action..." />
-            <button onClick={handleGenerate}>Generate</button>
-            <p>{response}</p>
         </div>
     );
 }
