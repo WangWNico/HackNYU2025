@@ -1,11 +1,14 @@
 import React from 'react';
 import styles from './UserInterface.module.css';
+import Profilebox from './Profilebox';
+import Statbox from './Statbox';
 
 function UserInterface() {
   return (
-    <>
-      hi
-    </>
+    <div> hello
+       <Profilebox />
+       {/*<Statbox />*/}
+    </div>
   )
 }
 
