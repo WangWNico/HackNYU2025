@@ -1,0 +1,24 @@
+.optionsBox {
+    width: 50%;
+    margin: 20px auto;
+}
+
+.options {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: space-around;
+  }
+
+.optionButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.optionButton:hover {
+    background-color: #0056b3;
+}
