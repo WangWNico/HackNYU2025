@@ -1,0 +1,36 @@
+.container{
+    position: fixed;
+    left: 15px;
+    top: 50px;
+    height: 35%;
+    width: 10%; 
+    padding: 10px;
+    border: 2px solid white;
+}
+.default{
+    position:relative;
+    top:20px;
+    border-radius:85px;
+    width: 110px; 
+    height: 150px; 
+    left:10px;
+    background: url('./src/assets/defaultpfp.png') center/cover no-repeat;
+}
+.male{
+    position:relative;
+    top:20px;
+    border-radius:85px;
+    width: 110px; 
+    height: 150px; 
+    left:10px;
+    background: url('./src/assets/malepfp.png') center/cover no-repeat;
+}
+.female{
+    position:relative;
+    top:20px;
+    border-radius:85px;
+    width: 110px; 
+    height: 150px; 
+    left:10px;
+    background: url('./src/assets/femalepfp.png') center/cover no-repeat;
+}

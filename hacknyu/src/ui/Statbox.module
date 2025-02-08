@@ -1,0 +1,9 @@
+.container{
+    position: fixed;
+    left: 15px;
+    top: 65vh;
+    height: 150px;
+    width: 15%; 
+    padding: 10px;
+    border: 2px solid white;
+}
