@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchGeminiResponse } from "./network/geminiApi";
+// import { fetchGeminiResponse } from "./network/geminiApi";
 
 function DungeonMasterTest() {
     const [input, setInput] = useState("");
