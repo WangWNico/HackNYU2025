@@ -15,11 +15,12 @@ export const getGeminiResponse = async (userInput) => {
         
         const choices = parseChoices(text);
         const narration = parseNarration(text);
+        const userStats = parseStats(text);
         console.log(narration);
 
         conversationHistory += `${prompt}\n${text}\n`;
 
-        return { narration, choices };
+        return { narration, choices, userStats };
     } catch (error) {
         console.error("Error getting Gemini response:", error);
         return { text: "Error getting response from AI.", choices: [] };
@@ -39,10 +40,12 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
 3. **Game Mechanics:**  
    - If the player encounters an enemy, describe the encounter and offer strategic choices (e.g., fight, negotiate, or flee).  
    - If the player searches an area, provide randomized loot, traps, or surprises.  
-   - If magic is involved, describe effects in a fantasy-driven manner.  
+   - If magic is involved, describe effects in a fantasy-driven manner.
+   -Initial Stats are loaded upon start, and then is affected only through choice outcomes, like combat.
 4. **Format of Response:**  
    - Narration: { Describe the current situation in at most 5 sentences. }
    - Choices: { Provide three numbered options for the player. }
+   -Initial Stats: {Provide 3 stats, each randomized from 1-10: hp, attack, speed }
    - **Example Output:**  
      \`\`\`
      Narration: { As you enter the ancient ruins, the air is thick with the scent of moss and decay. A faint glow pulses from deep within the shadows.  
@@ -52,6 +55,12 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
      Choices: { 1. Draw your sword and prepare to fight.
      2. Attempt to reason with the figure, offering a trade.
      3. Run towards the glowing light, hoping to escape. }
+
+     Stats: {
+     hp: 8,
+     attack:3,
+     speed:9
+     }
 
      \`\`\`
 
@@ -66,14 +75,14 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
         const result = await model.generateContent(initialPrompt);
         const response = await result.response;
         let text = response.text();
-        console.log(text);
+        //console.log(text);
         const narration = parseNarration(text);
         const choices = parseChoices(text);
-        console.log(narration);
+        const userStats = parseStats(text);
 
         conversationHistory += `${initialPrompt}\n${text}\n`;
 
-        return { narration, choices };
+        return { narration, choices, userStats };
     } catch (error) {
         console.error("Error generating initial prompt:", error);
         return { text: "Error generating initial prompt.", choices: [] };
@@ -104,4 +113,17 @@ function parseChoices(responseText) {
         choices.push({ number: match[1].trim(), description: match[2].trim() });
     }
     return choices;
+}
+function parseStats(responseText) {
+    const statMatch = responseText.match(/Stats:\s*{([\s\S]*?)}/);
+    console.log(statMatch);
+    if (statMatch && statMatch[1]) {
+        const statsArray = statMatch[1].trim().split(/\s*,\s*/);
+        
+        // This will give you an array like: ["hp: 8", "attack:3", "speed:9"]
+        console.log(statsArray);
+        return statsArray;
+    }
+    
+    return [];
 }

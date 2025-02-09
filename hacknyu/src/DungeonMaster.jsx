@@ -5,6 +5,7 @@ import OptionsBox from './ui/Optionsbox';
 import CustomResponse from './ui/CustomResponse';
 import DiceRoll from './ui/DiceRoll';
 import './DungeonMaster.css';
+import Statbox from './ui/Statbox';
 
 function DungeonMaster() {
     const [response, setResponse] = useState("Welcome Adventurers...");
@@ -13,6 +14,8 @@ function DungeonMaster() {
     const [customInput, setCustomInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [diceRollValue, setDiceRollValue] = useState(null);
+    const [userStats, setUserStats]= useState();
+
 
     useEffect(() => {
         const loadInitialResponse = async () => {
@@ -21,12 +24,12 @@ function DungeonMaster() {
                 const initialData = await getInitialRPGPrompt();
                 setResponse(initialData.narration);
                 setChoices(initialData.choices);
+                setUserStats(initialData.userStats);
             } finally {
                 setIsLoading(false);
                 setInitialResponseLoaded(true);
             }
         };
-
         loadInitialResponse();
     }, [initialResponseLoaded]);
 
@@ -36,6 +39,7 @@ function DungeonMaster() {
             const aiResponse = await getGeminiResponse(choice.description);
             setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
+            setUserStats(aiResponse.userStats);
         } finally {
             setIsLoading(false);
         }
@@ -45,8 +49,9 @@ function DungeonMaster() {
         if (!customInput) return;
 
         const aiResponse = await getGeminiResponse(customInput);
-        setResponse(aiResponse.text);
+        setResponse(aiResponse.narration);
         setChoices(aiResponse.choices);
+        setUserStats(aiResponse.userStats);
         setCustomInput("");
     };
 
@@ -58,6 +63,7 @@ function DungeonMaster() {
     return (
         <div>
             <h1>AI Dungeon Master</h1>
+            <Statbox stats={userStats} />
             <StoryBox text={response} />
             <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
             <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
