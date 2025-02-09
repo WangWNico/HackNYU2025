@@ -1,31 +1,45 @@
 import React, { useState } from 'react';
-import styles from './DiceRoll.module.css'; // Create this CSS module
+import styles from './DiceRoll.module.css';
+import dice1 from '../assets/dice1.png';
+import dice2 from '../assets/dice2.png';
+import dice3 from '../assets/dice3.png';
+import dice4 from '../assets/dice4.png';
+import dice5 from '../assets/dice5.png';
+import dice6 from '../assets/dice6.png';
 
-function DiceRoll({ onRoll }) {  // Receive a callback function as a prop
+function DiceRoll({ onRoll }) {
     const [rollResult, setRollResult] = useState(null);
-    const [isRolling, setIsRolling] = useState(false); // State for rolling animation
+    const [isRolling, setIsRolling] = useState(false);
+    const [diceImage, setDiceImage] = useState(null); // State for the image
+
+    const diceImages = { // Object to map results to images
+        1: dice1,
+        2: dice2,
+        3: dice3,
+        4: dice4,
+        5: dice5,
+        6: dice6,
+    };
 
     const rollDice = () => {
-        setIsRolling(true); // Start animation
-        const result = Math.floor(Math.random() * 6) + 1; // 1-6 roll (adjust for different dice)
+        setIsRolling(true);
+        const result = Math.floor(Math.random() * 6) + 1;
 
-        setTimeout(() => { // Simulate roll time
+        setTimeout(() => {
             setRollResult(result);
-            setIsRolling(false); // Stop animation
+            setDiceImage(diceImages[result]); // Set the image based on the result
+            setIsRolling(false);
             if (onRoll) {
-                onRoll(result); // Call the callback with the result
+                onRoll(result);
             }
-        }, 500); // Adjust delay as needed
+        }, 500);
     };
 
     return (
         <div className={styles.diceContainer}>
-            <div className={`${styles.dice} ${isRolling ? styles.rolling : ''}`}> {/* Apply rolling class */}
-                {rollResult ? (
-                    <span className={styles.rollResult}>{rollResult}</span>
-                ) : (
-                    <span>Roll!</span> // Initial text
-                )}
+            <div className={`${styles.dice} ${isRolling ? styles.rolling : ''}`}>
+                {diceImage && <img src={diceImage} alt={`Dice Roll: ${rollResult}`} className={styles.diceImage} />} {/* Show image */}
+                {!diceImage && <span>Roll!</span>} {/* Show "Roll!" if no image yet */}
             </div>
             <button onClick={rollDice} disabled={isRolling}>
                 {isRolling ? "Rolling..." : "Roll Dice"}
