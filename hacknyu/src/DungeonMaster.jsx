@@ -108,9 +108,13 @@ function DungeonMaster() {
                 <div className="loading-bar">Loading...</div>
             ) : (
                 <>
+                
                     <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
-                    <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+                    <div className= "diceCon">
                     {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
+                    </div>
+                    <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+                    
                 </>
             )}
         </div>
