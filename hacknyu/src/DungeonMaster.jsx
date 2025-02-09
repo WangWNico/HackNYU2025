@@ -3,6 +3,7 @@ import { getGeminiResponse, getInitialRPGPrompt } from "./network/geminiApi";
 import StoryBox from './ui/Storybox';
 import OptionsBox from './ui/Optionsbox';
 import CustomResponse from './ui/CustomResponse';
+import DiceRoll from './ui/DiceRoll';
 import ProfileBox from './ui/Profilebox';
 import './DungeonMaster.css';
 
@@ -12,6 +13,7 @@ function DungeonMaster() {
     const [choices, setChoices] = useState([]);
     const [customInput, setCustomInput] = useState(""); // State for custom input
     const [gender, setGender] = useState("default");
+    const [diceRollValue, setDiceRollValue] = useState(null);
 
     useEffect(() => {
         const loadInitialResponse = async () => {
@@ -51,6 +53,12 @@ function DungeonMaster() {
         setCustomInput("");
     };
 
+    const handleDiceRoll = (result) => {
+        setDiceRollValue(result);
+        console.log("Dice rolled:", result);
+        // Now you can use 'result' in your game logic (e.g., update stats, trigger events)
+    };
+
     return (
         <div>
             <h1>AI Dungeon Master</h1>
@@ -58,6 +66,7 @@ function DungeonMaster() {
             <StoryBox text={response} />
             <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
             <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+            <DiceRoll onRoll={handleDiceRoll} />
         </div>
     );
 }
