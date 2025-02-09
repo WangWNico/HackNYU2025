@@ -99,6 +99,7 @@ function DungeonMaster() {
         <div>
             
             <h1> <img src={Robot} className="robot"/> AI Dungeon Master</h1>
+            <Statbox stats={userStats} />
             <StoryBox text={response} isLoading={isLoading} />
             {isLoading ? (
                 <div className="loading-bar">Loading...</div>
@@ -107,7 +108,6 @@ function DungeonMaster() {
                     <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
                     <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
                     {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
-                    <Statbox stats={userStats} />
                 </>
             )}
         </div>
