@@ -22,19 +22,19 @@ function DiceRoll({ onRoll }) {
     };
 
     const rollDice = () => {
-        setIsRolling(true);
-        const result = Math.floor(Math.random() * 6) + 1;
+        setIsRolling(true); // Start animation
+        const result = Math.floor(Math.random() * 6) + 1; // 1-6 roll
 
         setTimeout(() => {
             setRollResult(result);
-            setDiceImage(diceImages[result]); // Set the image based on the result
-            setIsRolling(false);
+            setDiceImage(diceImages[result]);
+            setIsRolling(false); // Stop animation
             if (onRoll) {
-                onRoll(result);
+                onRoll(result); // Call the callback with the result!
             }
         }, 500);
     };
-
+    
     return (
         <div className={styles.diceContainer}>
             <div className={`${styles.dice} ${isRolling ? styles.rolling : ''}`}>
