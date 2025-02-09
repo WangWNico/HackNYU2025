@@ -5,6 +5,7 @@ import OptionsBox from './ui/Optionsbox';
 import CustomResponse from './ui/CustomResponse';
 import DiceRoll from './ui/DiceRoll';
 import './DungeonMaster.css';
+import Robot from './assets/Robot.png';
 
 function DungeonMaster() {
     const [response, setResponse] = useState("Welcome Adventurers...");
@@ -77,7 +78,7 @@ function DungeonMaster() {
         if (!customInput) return;
 
         const aiResponse = await getGeminiResponse(customInput);
-        setResponse(aiResponse.text);
+        setResponse(aiResponse.narration);
         setChoices(aiResponse.choices);
         setCustomInput("");
     };
@@ -90,7 +91,8 @@ function DungeonMaster() {
 
     return (
         <div>
-            <h1>AI Dungeon Master</h1>
+            
+            <h1> <img src={Robot} className="robot"/> AI Dungeon Master</h1>
             <StoryBox text={response} isLoading={isLoading} />
             {isLoading ? (
                 <div className="loading-bar">Loading...</div>
@@ -98,7 +100,7 @@ function DungeonMaster() {
                 <>
                     <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
                     <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
-                    <DiceRoll onRoll={handleDiceRoll} />
+                    {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
                 </>
             )}
         </div>

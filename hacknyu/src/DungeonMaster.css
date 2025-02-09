@@ -55,3 +55,9 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.robot {
+  height: 40px;
+  will-change: transform;
+  transition: transform 300ms;
+}
