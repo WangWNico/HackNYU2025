@@ -1,8 +1,9 @@
 .textBox {
     width: 75%;
+    min-height: 300px;
     margin: 20px auto;
     border: 1px solid #ccc;
-    background-color: gray;
+    background-color: rgb(71, 71, 71);
     padding: 10px;
     box-sizing: border-box;
     overflow-y: auto;
