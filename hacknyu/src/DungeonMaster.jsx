@@ -54,6 +54,7 @@ function DungeonMaster() {
 
         try {
             const aiResponse = await getGeminiResponse(input, roll);
+            
             setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
             setUserStats(aiResponse.userStats);
@@ -83,7 +84,6 @@ function DungeonMaster() {
 
         const aiResponse = await getGeminiResponse(customInput);
         setResponse(aiResponse.narration);
-        setResponse(aiResponse.narration);
         setChoices(aiResponse.choices);
         setUserStats(aiResponse.userStats);
         setCustomInput("");
@@ -93,11 +93,14 @@ function DungeonMaster() {
         setDiceRollValue(result);
         setRequiresDiceRoll(false);
         callGemini(currentChoice.description, result);
+        setTimeout(() => {
+            setRequiresDiceRoll(false); // Hide the DiceRoll component after the delay
+        }, 3000);
     };
 
     return (
-        <div>
-            
+        <>
+        <div className="container">
             <h1> <img src={Robot} className="robot"/> AI Dungeon Master</h1>
             <Statbox stats={userStats} />
             <StoryBox text={response} isLoading={isLoading} />
@@ -111,6 +114,7 @@ function DungeonMaster() {
                 </>
             )}
         </div>
+        </>
     );
 }
 
