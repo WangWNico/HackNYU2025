@@ -18,7 +18,7 @@ function DungeonMaster() {
     const [diceRollValue, setDiceRollValue] = useState(null); // Store dice roll value
     const [isLoading, setIsLoading] = useState(false);
     const [showDiceResult, setShowDiceResult] = useState(false);
-    const [userStats, setUserStats]= useState();
+    const [userStats, setUserStats]= useState([]);
 
 
     useEffect(() => {
@@ -43,9 +43,9 @@ function DungeonMaster() {
         if (needsRoll) {
             setRequiresDiceRoll(true);
             setCurrentChoice(choice);
-            setShowDiceResult(false); // Reset for the next roll
+            setShowDiceResult(false);
         } else {
-            callGemini(choice.description); // No roll needed
+            callGemini(choice.description);
         }
     };
 
@@ -62,7 +62,7 @@ function DungeonMaster() {
             const nextChoicesNeedRoll = aiResponse.choices.some(c => c.description.includes("(requires a dice roll"));
             setRequiresDiceRoll(nextChoicesNeedRoll);
 
-            setShowDiceResult(true); // Show the dice result!
+            setShowDiceResult(true);
 
             setTimeout(() => {
                 setIsLoading(false);
@@ -91,6 +91,7 @@ function DungeonMaster() {
 
     const handleDiceRoll = (result) => {
         setDiceRollValue(result);
+        setRequiresDiceRoll(false);
         callGemini(currentChoice.description, result);
         setTimeout(() => {
             setRequiresDiceRoll(false); // Hide the DiceRoll component after the delay
