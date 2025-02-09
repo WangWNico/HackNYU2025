@@ -42,12 +42,13 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
    - If the player searches an area, provide randomized loot, traps, or surprises.  
    - If magic is involved, describe effects in a fantasy-driven manner.  
    - Dice Rolls: Occasionally (about every 2-3 choices), introduce a dice roll to determine the success or failure of a choice.  Indicate in the choice description that a dice roll is required.  For example: "1. Attempt to pick the lock (requires a dice roll of 4 or higher)."
-   - Initial Stats are loaded upon start, and then is affected only through choice outcomes, like combat.
+   - Upon start, provide hp, attack, speed each randomly generated from numbers 1-50.
+   -Occasionally, have a choice, that has the word "GAME OVER" in it and, if the user chooses it, the narration given back is "GAME OVER".
 
 4. **Format of Response:**  
    - Narration: { Describe the current situation in at most 5 sentences. }
    - Choices: { Provide three numbered options for the player. }
-   - Initial Stats: {Provide 3 stats, each randomized from 1-10: hp, attack, speed }
+   - Initial Stats: {Provide 3 stats, hp, attack, speed, each stat change is determined by choice outcome}
    - **Dice Roll Result (Only when a dice roll is required):** { The result of the dice roll (e.g., "You rolled a 5"). }  Include this *only* after the player has made a choice that requires a dice roll and you are responding with the outcome.  Do *not* include it in the initial prompt or in responses where no dice roll is needed.
    - **Example Output (No Dice Roll):**
 
@@ -127,8 +128,9 @@ function parseNarration(responseText) {
     if (narrationMatch && narrationMatch[1]) {
         return narrationMatch[1].trim();
     }
+    
 
-    return "No narration found.";
+    return "GAME OVER";
 }
 
 function parseChoices(responseText) {
