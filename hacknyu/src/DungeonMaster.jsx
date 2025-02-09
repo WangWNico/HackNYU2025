@@ -9,42 +9,70 @@ function DungeonMaster() {
     const [response, setResponse] = useState("Welcome Adventurers...");
     const [initialResponseLoaded, setInitialResponseLoaded] = useState(false);
     const [choices, setChoices] = useState([]);
-    const [customInput, setCustomInput] = useState(""); // State for custom input
+    const [customInput, setCustomInput] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const loadInitialResponse = async () => {
-            const initialData = await getInitialRPGPrompt();
-            setResponse(initialData.text);
-            setChoices(initialData.choices);
-            setInitialResponseLoaded(true);
+            setIsLoading(true);
+            try {
+                const initialData = await getInitialRPGPrompt();
+                setResponse(initialData.text);
+                setChoices(initialData.choices);
+            } finally {
+                setIsLoading(false);
+                setInitialResponseLoaded(true);
+            }
         };
-
         loadInitialResponse();
     }, []);
 
     const handleChoiceClick = async (choice) => {
-        if (!initialResponseLoaded) return;
-
-        const aiResponse = await getGeminiResponse(choice.description);
-        setResponse(aiResponse.text);
-        setChoices(aiResponse.choices);
+        setIsLoading(true);
+        try {
+            const aiResponse = await getGeminiResponse(choice.description);
+            setResponse(aiResponse.text);
+            setChoices(aiResponse.choices);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleCustomResponseSubmit = async () => {
-        if (!customInput) return;
-
-        const aiResponse = await getGeminiResponse(customInput);
-        setResponse(aiResponse.text);
-        setChoices(aiResponse.choices);
-        setCustomInput("");
+        if (!customInput || isLoading) return;
+        setIsLoading(true);
+        try {
+            const aiResponse = await getGeminiResponse(customInput);
+            setResponse(aiResponse.text);
+            setChoices(aiResponse.choices);
+            setCustomInput("");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <div>
             <h1>AI Dungeon Master</h1>
-            <StoryBox text={response} />
-            <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
-            <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+            <StoryBox 
+                text={response}
+                isLoading={isLoading}
+            />
+        {isLoading ? (
+            <div className="loading-spinner"></div>
+        ) : (
+            <>
+                <OptionsBox 
+                    choices={choices} 
+                    onChoiceClick={handleChoiceClick} 
+                />
+                <CustomResponse 
+                    input={customInput} 
+                    setInput={setCustomInput} 
+                    onSubmit={handleCustomResponseSubmit} 
+                />
+            </>
+        )}    
         </div>
     );
 }
