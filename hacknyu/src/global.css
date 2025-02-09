@@ -1,0 +1,8 @@
+/* global.css or index.css */
+body {
+    font-family: 'Sourgummy', cursive; /* Use 'cursive' as a fallback */
+}
+
+h1 {
+    font-family: sans-serif;
+}
