@@ -2,14 +2,14 @@
     display: flex; /* Use flexbox for layout */
     flex-direction: column; /* Arrange elements vertically */
     align-items: center; /* Center horizontally */
-    width: 50%; /* Or a specific pixel width like 600px */
     margin: 20px auto; /* Center the container on the page */
     box-sizing: border-box;
     border-radius: 20px;
 }
 
 .textBox {
-    width: 100%;
+    width: 75%;
+    margin: 20px auto;
     margin-bottom: 10px;
 }
 

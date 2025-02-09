@@ -1,50 +1,35 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styles from './DiceRoll.module.css';
+import React, { useState } from 'react';
+import styles from './DiceRoll.module.css'; // Create this CSS module
 
-function DiceRoll({ onRoll }) {
+function DiceRoll({ onRoll }) {  // Receive a callback function as a prop
     const [rollResult, setRollResult] = useState(null);
-    const [isRolling, setIsRolling] = useState(false);
-    const diceRef = useRef(null);
+    const [isRolling, setIsRolling] = useState(false); // State for rolling animation
 
     const rollDice = () => {
-        setIsRolling(true);
-        setRollResult(null);
+        setIsRolling(true); // Start animation
+        const result = Math.floor(Math.random() * 6) + 1; // 1-6 roll (adjust for different dice)
 
-        const result = Math.floor(Math.random() * 6) + 1;
-
-        if (diceRef.current) {
-            diceRef.current.classList.remove(styles.dice1, styles.dice2, styles.dice3, styles.dice4, styles.dice5, styles.dice6);
-
-            // Generate random rotations for each axis (X, Y, Z)
-            const randomX = Math.floor(Math.random() * 360) + 720; // At least 2 full rotations
-            const randomY = Math.floor(Math.random() * 360) + 720;
-            const randomZ = Math.floor(Math.random() * 360) + 360; // At least 1 full rotation
-
-
-            setTimeout(() => {
-                diceRef.current.style.transform = `rotateX(${randomX}deg) rotateY(${randomY}deg) rotateZ(${randomZ}deg)`; // Apply the random rotation
-
-                setTimeout(() => {
-                    diceRef.current.classList.add(styles[`dice${result}`]); // Show the final face
-                    setRollResult(result);
-                    setIsRolling(false);
-                    if (onRoll) {
-                        onRoll(result);
-                    }
-                }, 1000); // Animation duration
-            }, 10);
-        }
+        setTimeout(() => { // Simulate roll time
+            setRollResult(result);
+            setIsRolling(false); // Stop animation
+            if (onRoll) {
+                onRoll(result); // Call the callback with the result
+            }
+        }, 500); // Adjust delay as needed
     };
 
     return (
         <div className={styles.diceContainer}>
-            <div ref={diceRef} className={`${styles.dice} ${isRolling ? styles.rolling : ''}`}>
-                {/* No need to display the number directly on the dice */}
+            <div className={`${styles.dice} ${isRolling ? styles.rolling : ''}`}> {/* Apply rolling class */}
+                {rollResult ? (
+                    <span className={styles.rollResult}>{rollResult}</span>
+                ) : (
+                    <span>Roll!</span> // Initial text
+                )}
             </div>
             <button onClick={rollDice} disabled={isRolling}>
                 {isRolling ? "Rolling..." : "Roll Dice"}
             </button>
-            {rollResult && <p>You rolled a {rollResult}</p>} {/* Display result below */}
         </div>
     );
 }
