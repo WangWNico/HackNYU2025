@@ -99,8 +99,8 @@ function DungeonMaster() {
     };
 
     return (
-        <div>
-            
+        <>
+        <div className="container">
             <h1> <img src={Robot} className="robot"/> AI Dungeon Master</h1>
             <Statbox stats={userStats} />
             <StoryBox text={response} isLoading={isLoading} />
@@ -114,6 +114,7 @@ function DungeonMaster() {
                 </>
             )}
         </div>
+        </>
     );
 }
 
