@@ -53,16 +53,12 @@ function DungeonMaster() {
     };
 
     const handleCustomResponseSubmit = async () => {
-        if (!customInput || isLoading) return;
-        setIsLoading(true);
-        try {
-            const aiResponse = await getGeminiResponse(customInput);
-            setResponse(aiResponse.text);
-            setChoices(aiResponse.choices);
-            setCustomInput("");
-        } finally {
-            setIsLoading(false);
-        }
+        if (!customInput) return;
+
+        const aiResponse = await getGeminiResponse(customInput);
+        setResponse(aiResponse.text);
+        setChoices(aiResponse.choices);
+        setCustomInput("");
     };
 
     const handleDiceRoll = (result) => {
@@ -75,28 +71,10 @@ function DungeonMaster() {
         <div>
             <h1>AI Dungeon Master</h1>
             <ProfileBox gender={gender} />
-            <StoryBox 
-                text={response}
-                isLoading={isLoading}
-            />
-        {isLoading ? (
-            <div className="loading-spinner"></div>
-        ) : (
-            <>
-                <OptionsBox 
-                    choices={choices} 
-                    onChoiceClick={handleChoiceClick} 
-                />
-                <CustomResponse 
-                    input={customInput} 
-                    setInput={setCustomInput} 
-                    onSubmit={handleCustomResponseSubmit} 
-                />
-                <DiceRoll 
-                    onRoll={handleDiceRoll} 
-                />
-            </>
-        )}    
+            <StoryBox text={response} />
+            <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
+            <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+            <DiceRoll onRoll={handleDiceRoll} />
         </div>
     );
 }
