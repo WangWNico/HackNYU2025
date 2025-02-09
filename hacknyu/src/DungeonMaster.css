@@ -71,3 +71,8 @@ h1 {
   will-change: transform;
   transition: transform 300ms;
 }
+.diceCon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

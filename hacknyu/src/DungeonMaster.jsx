@@ -100,16 +100,20 @@ function DungeonMaster() {
     return (
         <>
         <div className="container">
-            <h1> <img src={Robot} className="robot"/> AI Dungeon Master</h1>
+            <h1> <img src={Robot} className="robot"/> Stupid Adventures Using ChatBot's Yarns </h1>
             <Statbox stats={userStats} />
             <StoryBox text={response} isLoading={isLoading} />
             {isLoading ? (
                 <div className="loading-bar">Loading...</div>
             ) : (
                 <>
+                
                     <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
-                    <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+                    <div className= "diceCon">
                     {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
+                    </div>
+                    <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+                    
                 </>
             )}
         </div>
