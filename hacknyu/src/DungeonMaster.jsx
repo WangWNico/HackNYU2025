@@ -29,9 +29,9 @@ function DungeonMaster() {
                 setInitialResponseLoaded(true);
             }
         };
-
+    
         loadInitialResponse();
-    }, [initialResponseLoaded]);
+    }, []);
 
     const handleChoiceClick = (choice) => {
         const needsRoll = choice.description.includes("(requires a dice roll");
