@@ -6,7 +6,8 @@ function StoryBox({ text, isLoading }) {
         <div className={styles.container}>
             <div className={styles.textBox}>
                 {isLoading ? (
-                    <div className="loading-spinner"></div>
+                    <div className="loading-spinner">
+                    </div>
                 ) : (
                     <p className={styles.textDisplay}>{text}</p>
                 )}

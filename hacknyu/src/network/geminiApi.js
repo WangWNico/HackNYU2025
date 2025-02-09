@@ -81,14 +81,12 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
 };
 
 function parseNarration(responseText) {
-    // Match the narration text, even if it spans multiple lines
     const narrationMatch = responseText.match(/Narration:\s*\{([\s\S]*?)\}/);
 
     if (narrationMatch && narrationMatch[1]) {
         return narrationMatch[1].trim();
     }
 
-    // Fallback: If the regex doesn't match, return a default message
     return "No narration found.";
 }
 

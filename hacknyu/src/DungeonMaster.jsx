@@ -58,10 +58,16 @@ function DungeonMaster() {
     return (
         <div>
             <h1>AI Dungeon Master</h1>
-            <StoryBox text={response} />
-            <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
-            <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
-            <DiceRoll onRoll={handleDiceRoll} />
+            <StoryBox text={response} isLoading={isLoading} />
+            {isLoading ? (
+                <div className="loading-bar">Loading...</div>
+            ) : (
+                <>
+                    <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
+                    <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+                    <DiceRoll onRoll={handleDiceRoll} />
+                </>
+            )}
         </div>
     );
 }
