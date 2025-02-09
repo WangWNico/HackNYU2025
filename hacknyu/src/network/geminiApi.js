@@ -93,7 +93,7 @@ function parseNarration(responseText) {
 }
 
 function parseChoices(responseText) {
-    const choicesMatch = responseText.match(/Choices:\s*([\s\S]*)/);
+    const choicesMatch = responseText.match(/Choices:\s*([\s\S]*?)\}/);
     if (!choicesMatch) return [];
 
     const choicesText = choicesMatch[1];
