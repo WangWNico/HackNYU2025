@@ -38,7 +38,7 @@ function DungeonMaster() {
     }, []);
 
     const handleChoiceClick = (choice) => {
-        const needsRoll = choice.description.includes("(requires a dice roll");
+        const needsRoll = choice.description.includes("dice roll");
 
         if (needsRoll) {
             setRequiresDiceRoll(true);
@@ -54,26 +54,26 @@ function DungeonMaster() {
 
         try {
             const aiResponse = await getGeminiResponse(input, roll);
-            
             setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
             setUserStats(aiResponse.userStats);
 
-            const nextChoicesNeedRoll = aiResponse.choices.some(c => c.description.includes("(requires a dice roll"));
+            const nextChoicesNeedRoll = aiResponse.choices.some(c => c.description.includes("dice roll"));
             setRequiresDiceRoll(nextChoicesNeedRoll);
 
-            setShowDiceResult(true);
+            setShowDiceResult(true); // Show the dice result!
 
+            // Delay *after* showing the dice result
             setTimeout(() => {
-                setIsLoading(false);
+                setIsLoading(false); // Hide loading screen *after* the delay
                 setCurrentChoice(null);
                 setDiceRollValue(null);
-            }, 1000);
-    
+            }, 3000); // 3-second delay
+
         } catch (error) {
             console.error("Error calling Gemini:", error);
-            // Handle error appropriately (e.g., display an error message)
-            setIsLoading(false); // Stop loading even if there's an error
+            // Handle error appropriately
+            setIsLoading(false); // Hide loading screen even if there's an error
             setCurrentChoice(null);
             setDiceRollValue(null);
         }
@@ -91,11 +91,10 @@ function DungeonMaster() {
 
     const handleDiceRoll = (result) => {
         setDiceRollValue(result);
-        setRequiresDiceRoll(false);
-        callGemini(currentChoice.description, result);
+        // Delay before calling callGemini
         setTimeout(() => {
-            setRequiresDiceRoll(false); // Hide the DiceRoll component after the delay
-        }, 3000);
+            callGemini(currentChoice.description, result); // Call Gemini *after* the delay
+        }, 2000); // 3-second delay
     };
 
     return (
