@@ -3,6 +3,7 @@ import { getGeminiResponse, getInitialRPGPrompt } from "./network/geminiApi";
 import StoryBox from './ui/Storybox';
 import OptionsBox from './ui/Optionsbox';
 import CustomResponse from './ui/CustomResponse';
+import ProfileBox from './ui/Profilebox';
 import './DungeonMaster.css';
 
 function DungeonMaster() {
@@ -11,6 +12,7 @@ function DungeonMaster() {
     const [choices, setChoices] = useState([]);
     const [customInput, setCustomInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [gender, setGender] = useState("default");
 
     useEffect(() => {
         const loadInitialResponse = async () => {
@@ -24,14 +26,24 @@ function DungeonMaster() {
                 setInitialResponseLoaded(true);
             }
         };
+
+        if (initialResponseLoaded) {
+            const randomGender = Math.random() < 0.5 ? "male" : "female";
+            setGender(randomGender);
+        }
         loadInitialResponse();
-    }, []);
+    }, [initialResponseLoaded]);
 
     const handleChoiceClick = async (choice) => {
         setIsLoading(true);
         try {
             const aiResponse = await getGeminiResponse(choice.description);
-            setResponse(aiResponse.text);
+            if (choice.description.includes("male")) {
+            setGender("male");
+        } else if (choice.description.includes("female")) {
+            setGender("female");
+        }
+        setResponse(aiResponse.text);
             setChoices(aiResponse.choices);
         } finally {
             setIsLoading(false);
@@ -54,6 +66,7 @@ function DungeonMaster() {
     return (
         <div>
             <h1>AI Dungeon Master</h1>
+            <ProfileBox gender={gender} />
             <StoryBox 
                 text={response}
                 isLoading={isLoading}
