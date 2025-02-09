@@ -11,8 +11,11 @@ function DungeonMaster() {
     const [initialResponseLoaded, setInitialResponseLoaded] = useState(false);
     const [choices, setChoices] = useState([]);
     const [customInput, setCustomInput] = useState("");
+    const [requiresDiceRoll, setRequiresDiceRoll] = useState(false);
+    const [currentChoice, setCurrentChoice] = useState(null);
+    const [diceRollValue, setDiceRollValue] = useState(null); // Store dice roll value
     const [isLoading, setIsLoading] = useState(false);
-    const [diceRollValue, setDiceRollValue] = useState(null);
+    const [showDiceResult, setShowDiceResult] = useState(false);
 
     useEffect(() => {
         const loadInitialResponse = async () => {
@@ -30,14 +33,43 @@ function DungeonMaster() {
         loadInitialResponse();
     }, [initialResponseLoaded]);
 
-    const handleChoiceClick = async (choice) => {
+    const handleChoiceClick = (choice) => {
+        const needsRoll = choice.description.includes("(requires a dice roll");
+
+        if (needsRoll) {
+            setRequiresDiceRoll(true);
+            setCurrentChoice(choice);
+            setShowDiceResult(false); // Reset for the next roll
+        } else {
+            callGemini(choice.description); // No roll needed
+        }
+    };
+
+    const callGemini = async (input, roll) => {
         setIsLoading(true);
+
         try {
-            const aiResponse = await getGeminiResponse(choice.description);
+            const aiResponse = await getGeminiResponse(input, roll);
             setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
-        } finally {
-            setIsLoading(false);
+
+            const nextChoicesNeedRoll = aiResponse.choices.some(c => c.description.includes("(requires a dice roll"));
+            setRequiresDiceRoll(nextChoicesNeedRoll);
+
+            setShowDiceResult(true); // Show the dice result!
+
+            setTimeout(() => {
+                setIsLoading(false);
+                setCurrentChoice(null);
+                setDiceRollValue(null);
+            }, 1000);
+    
+        } catch (error) {
+            console.error("Error calling Gemini:", error);
+            // Handle error appropriately (e.g., display an error message)
+            setIsLoading(false); // Stop loading even if there's an error
+            setCurrentChoice(null);
+            setDiceRollValue(null);
         }
     };
 
@@ -52,7 +84,8 @@ function DungeonMaster() {
 
     const handleDiceRoll = (result) => {
         setDiceRollValue(result);
-        console.log("Dice rolled:", result);
+        setRequiresDiceRoll(false); // Hide the DiceRoll component
+        callGemini(currentChoice.description, result);
     };
 
     return (
