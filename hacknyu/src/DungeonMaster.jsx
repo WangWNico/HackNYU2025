@@ -4,7 +4,6 @@ import StoryBox from './ui/Storybox';
 import OptionsBox from './ui/Optionsbox';
 import CustomResponse from './ui/CustomResponse';
 import DiceRoll from './ui/DiceRoll';
-import ProfileBox from './ui/Profilebox';
 import './DungeonMaster.css';
 
 function DungeonMaster() {
@@ -13,7 +12,6 @@ function DungeonMaster() {
     const [choices, setChoices] = useState([]);
     const [customInput, setCustomInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [gender, setGender] = useState("default");
     const [diceRollValue, setDiceRollValue] = useState(null);
 
     useEffect(() => {
@@ -29,10 +27,6 @@ function DungeonMaster() {
             }
         };
 
-        if (initialResponseLoaded) {
-            const randomGender = Math.random() < 0.5 ? "male" : "female";
-            setGender(randomGender);
-        }
         loadInitialResponse();
     }, [initialResponseLoaded]);
 
@@ -40,12 +34,7 @@ function DungeonMaster() {
         setIsLoading(true);
         try {
             const aiResponse = await getGeminiResponse(choice.description);
-            if (choice.description.includes("male")) {
-            setGender("male");
-        } else if (choice.description.includes("female")) {
-            setGender("female");
-        }
-        setResponse(aiResponse.text);
+            setResponse(aiResponse.text);
             setChoices(aiResponse.choices);
         } finally {
             setIsLoading(false);
@@ -64,13 +53,11 @@ function DungeonMaster() {
     const handleDiceRoll = (result) => {
         setDiceRollValue(result);
         console.log("Dice rolled:", result);
-        // Now you can use 'result' in your game logic (e.g., update stats, trigger events)
     };
 
     return (
         <div>
             <h1>AI Dungeon Master</h1>
-            <ProfileBox gender={gender} />
             <StoryBox text={response} />
             <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
             <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
