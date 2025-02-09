@@ -5,6 +5,8 @@ import OptionsBox from './ui/Optionsbox';
 import CustomResponse from './ui/CustomResponse';
 import DiceRoll from './ui/DiceRoll';
 import './DungeonMaster.css';
+import Statbox from './ui/Statbox';
+import Robot from './assets/Robot.png';
 
 function DungeonMaster() {
     const [response, setResponse] = useState("Welcome Adventurers...");
@@ -16,6 +18,8 @@ function DungeonMaster() {
     const [diceRollValue, setDiceRollValue] = useState(null); // Store dice roll value
     const [isLoading, setIsLoading] = useState(false);
     const [showDiceResult, setShowDiceResult] = useState(false);
+    const [userStats, setUserStats]= useState();
+
 
     useEffect(() => {
         const loadInitialResponse = async () => {
@@ -24,14 +28,14 @@ function DungeonMaster() {
                 const initialData = await getInitialRPGPrompt();
                 setResponse(initialData.narration);
                 setChoices(initialData.choices);
+                setUserStats(initialData.userStats);
             } finally {
                 setIsLoading(false);
                 setInitialResponseLoaded(true);
             }
         };
-
         loadInitialResponse();
-    }, [initialResponseLoaded]);
+    }, []);
 
     const handleChoiceClick = (choice) => {
         const needsRoll = choice.description.includes("(requires a dice roll");
@@ -53,6 +57,7 @@ function DungeonMaster() {
             
             setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
+            setUserStats(aiResponse.userStats);
 
             const nextChoicesNeedRoll = aiResponse.choices.some(c => c.description.includes("(requires a dice roll"));
             setRequiresDiceRoll(nextChoicesNeedRoll);
@@ -80,6 +85,7 @@ function DungeonMaster() {
         const aiResponse = await getGeminiResponse(customInput);
         setResponse(aiResponse.narration);
         setChoices(aiResponse.choices);
+        setUserStats(aiResponse.userStats);
         setCustomInput("");
     };
 
@@ -93,13 +99,19 @@ function DungeonMaster() {
 
     return (
         <div>
-            <h1>AI Dungeon Master</h1>
-            <StoryBox text={response} />
-            <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
-            <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
-            {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
-            {showDiceResult && diceRollValue && <p>You rolled a {diceRollValue}!</p>} {/* Display the result */}
-            {isLoading && <p>Loading...</p>}
+            
+            <h1> <img src={Robot} className="robot"/> AI Dungeon Master</h1>
+            <Statbox stats={userStats} />
+            <StoryBox text={response} isLoading={isLoading} />
+            {isLoading ? (
+                <div className="loading-bar">Loading...</div>
+            ) : (
+                <>
+                    <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
+                    <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
+                    {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
+                </>
+            )}
         </div>
     );
 }

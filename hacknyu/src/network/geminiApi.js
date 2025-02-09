@@ -15,11 +15,12 @@ export const getGeminiResponse = async (userInput) => {
         
         const choices = parseChoices(text);
         const narration = parseNarration(text);
+        const userStats = parseStats(text);
         console.log(narration);
 
         conversationHistory += `${prompt}\n${text}\n`;
 
-        return { narration, choices };
+        return { narration, choices, userStats };
     } catch (error) {
         console.error("Error getting Gemini response:", error);
         return { text: "Error getting response from AI.", choices: [] };
@@ -33,37 +34,44 @@ export const getInitialRPGPrompt = async () => {
 
 Your role is to describe the world, set the scene, narrate events dynamically, and guide the player through an immersive journey.
 
-### **Rules for Responses:**
+### **Rules for Responses:**  
+1. **Storytelling:** Start with a vivid, engaging scene that describes the environment, characters, and situation.  
+2. **Choices:** Always provide exactly **three** distinct choices for the player to continue the story. These should be meaningful and impact the storyline.  
+3. **Game Mechanics:**  
+   - If the player encounters an enemy, describe the encounter and offer strategic choices (e.g., fight, negotiate, or flee).  
+   - If the player searches an area, provide randomized loot, traps, or surprises.  
+   - If magic is involved, describe effects in a fantasy-driven manner.  
+   - Dice Rolls: Occasionally (about every 2-3 choices), introduce a dice roll to determine the success or failure of a choice.  Indicate in the choice description that a dice roll is required.  For example: "1. Attempt to pick the lock (requires a dice roll of 4 or higher)."
+   - Initial Stats are loaded upon start, and then is affected only through choice outcomes, like combat.
 
-1. **Storytelling:** Start with a vivid, engaging scene that describes the environment, characters, and situation.
+4. **Format of Response:**  
+   - Narration: { Describe the current situation in at most 5 sentences. }
+   - Choices: { Provide three numbered options for the player. }
+   - Initial Stats: {Provide 3 stats, each randomized from 1-10: hp, attack, speed }
+   - **Dice Roll Result (Only when a dice roll is required):** { The result of the dice roll (e.g., "You rolled a 5"). }  Include this *only* after the player has made a choice that requires a dice roll and you are responding with the outcome.  Do *not* include it in the initial prompt or in responses where no dice roll is needed.
+   - **Example Output (No Dice Roll):**
 
-2. **Choices:** Always provide exactly **three** distinct choices for the player to continue the story. These should be meaningful and impact the storyline.
+     \`\`\`
+     Narration: { As you enter the ancient ruins, the air is thick with the scent of moss and decay. A faint glow pulses from deep within the shadows.  
+     Suddenly, you hear a growl behind you. A large, hooded figure steps forward, gripping a rusted blade. 
+     What do you do? }
+     
+     Choices: { 1. Draw your sword and prepare to fight.
+     2. Attempt to reason with the figure, offering a trade.
+     3. Run towards the glowing light, hoping to escape. }
 
-3. **Game Mechanics:**
+     Stats: {
+     hp: 8,
+     attack:3,
+     speed:9
+     }
 
-    - If the player encounters an enemy, describe the encounter and offer strategic choices (e.g., fight, negotiate, or flee).
-    - If the player searches an area, provide randomized loot, traps, or surprises.
-    - If magic is involved, describe effects in a fantasy-driven manner.
-    - **Dice Rolls:** Occasionally (about every 2-3 choices), introduce a dice roll to determine the success or failure of a choice.  Indicate in the choice description that a dice roll is required.  For example: "1. Attempt to pick the lock (requires a dice roll of 4 or higher)."
-
-4. **Format of Response:**
-
-    - Narration: { Describe the current situation in at most 5 sentences. }
-    - Choices: { Provide three numbered options for the player. }
-    - **Dice Roll Result (Only when a dice roll is required):** { The result of the dice roll (e.g., "You rolled a 5"). }  Include this *only* after the player has made a choice that requires a dice roll and you are responding with the outcome.  Do *not* include it in the initial prompt or in responses where no dice roll is needed.
-    - **Example Output (No Dice Roll):**
-
-    \`\`\`
-    Narration: { As you enter the ancient ruins, the air is thick with the scent of moss and decay. A faint glow pulses from deep within the shadows. Suddenly, you hear a growl behind you. A large, hooded figure steps forward, gripping a rusted blade. What do you do? }
-
-    Choices: { 1. Draw your sword and prepare to fight.
-    2. Attempt to reason with the figure, offering a trade.
-    3. Run towards the glowing light, hoping to escape. }
     \`\`\`
 
     - **Example Output (With Dice Roll):**
 
     \`\`\`
+
     Narration: { You decide to try and pick the lock. You carefully insert your lockpicks and begin to manipulate them. }
 
     Choices: { 1. Continue trying to pick the lock (requires a dice roll of 4 or higher).
@@ -80,7 +88,11 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
     2. Search for traps.
     3. Proceed deeper into the ruins. }
 
-    \`\`\`
+     Stats: {
+     hp: 8,
+     attack:3,
+     speed:9
+     }
 
 ### **Gameplay Flow:**
 
@@ -95,14 +107,14 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
         const result = await model.generateContent(initialPrompt);
         const response = await result.response;
         let text = response.text();
-        console.log(text);
+        //console.log(text);
         const narration = parseNarration(text);
         const choices = parseChoices(text);
-        console.log(narration);
+        const userStats = parseStats(text);
 
         conversationHistory += `${initialPrompt}\n${text}\n`;
 
-        return { narration, choices };
+        return { narration, choices, userStats };
     } catch (error) {
         console.error("Error generating initial prompt:", error);
         return { text: "Error generating initial prompt.", choices: [] };
@@ -110,14 +122,12 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
 };
 
 function parseNarration(responseText) {
-    // Match the narration text, even if it spans multiple lines
     const narrationMatch = responseText.match(/Narration:\s*\{([\s\S]*?)\}/);
 
     if (narrationMatch && narrationMatch[1]) {
         return narrationMatch[1].trim();
     }
 
-    // Fallback: If the regex doesn't match, return a default message
     return "No narration found.";
 }
 
@@ -133,4 +143,17 @@ function parseChoices(responseText) {
         choices.push({ number: match[1].trim(), description: match[2].trim() });
     }
     return choices;
+}
+function parseStats(responseText) {
+    const statMatch = responseText.match(/Stats:\s*{([\s\S]*?)}/);
+    console.log(statMatch);
+    if (statMatch && statMatch[1]) {
+        const statsArray = statMatch[1].trim().split(/\s*,\s*/);
+        
+        // This will give you an array like: ["hp: 8", "attack:3", "speed:9"]
+        console.log(statsArray);
+        return statsArray;
+    }
+    
+    return [];
 }
