@@ -19,7 +19,7 @@ function DungeonMaster() {
             setIsLoading(true);
             try {
                 const initialData = await getInitialRPGPrompt();
-                setResponse(initialData.text);
+                setResponse(initialData.narration);
                 setChoices(initialData.choices);
             } finally {
                 setIsLoading(false);
@@ -34,7 +34,7 @@ function DungeonMaster() {
         setIsLoading(true);
         try {
             const aiResponse = await getGeminiResponse(choice.description);
-            setResponse(aiResponse.text);
+            setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
         } finally {
             setIsLoading(false);

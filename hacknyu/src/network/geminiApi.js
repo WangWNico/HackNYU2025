@@ -1,9 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API_KEY);
-// console.log(import.meta.env.VITE_API_KEY);
 let conversationHistory = "";
 
-export const getGeminiResponse = async (userInput) => { // Renamed and now takes input
+export const getGeminiResponse = async (userInput) => { 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     try {
@@ -12,32 +11,21 @@ export const getGeminiResponse = async (userInput) => { // Renamed and now takes
         const result = await model.generateContent(prompt);
         const response = await result.response;
         let text = response.text();
+        console.log(text);
         
         const choices = parseChoices(text);
-
-        text = trimChoicesFromText(text, choices);
+        const narration = parseNarration(text);
+        console.log(narration);
 
         conversationHistory += `${prompt}\n${text}\n`;
 
-        return { text, choices };
+        return { narration, choices };
     } catch (error) {
         console.error("Error getting Gemini response:", error);
         return { text: "Error getting response from AI.", choices: [] };
     }
 };
 
-function parseChoices(text) {
-    const choiceRegex = /(\d️⃣|🔢|\[\d\]|\d\.)\s(.+?)(?=(\d️⃣|🔢|\[\d\]|\d\.|$))/gs;
-    const choices = [];
-    let match;
-
-    while ((match = choiceRegex.exec(text)) !== null) {
-        const number = match[1].trim();
-        const description = match[2].trim();
-        choices.push({ number, description });
-    }
-    return choices;
-}
 
 export const getInitialRPGPrompt = async () => {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -53,20 +41,18 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
    - If the player searches an area, provide randomized loot, traps, or surprises.  
    - If magic is involved, describe effects in a fantasy-driven manner.  
 4. **Format of Response:**  
-   - **Narration:** Describe the current situation in at most 5 sentences.
-   - **Choices:** Provide three numbered options for the player.  
+   - Narration: { Describe the current situation in at most 5 sentences. }
+   - Choices: { Provide three numbered options for the player. }
    - **Example Output:**  
      \`\`\`
-     Narration:
-     As you enter the ancient ruins, the air is thick with the scent of moss and decay. A faint glow pulses from deep within the shadows.  
-     Suddenly, you hear a growl behind you. A large, hooded figure steps forward, gripping a rusted blade.  
-
-     What do you do?
+     Narration: { As you enter the ancient ruins, the air is thick with the scent of moss and decay. A faint glow pulses from deep within the shadows.  
+     Suddenly, you hear a growl behind you. A large, hooded figure steps forward, gripping a rusted blade. 
+     What do you do? }
      
-     Choices:
-     1. Draw your sword and prepare to fight.  
-     2. Attempt to reason with the figure, offering a trade.  
-     3. Run towards the glowing light, hoping to escape.  
+     Choices: { 1. Draw your sword and prepare to fight.
+     2. Attempt to reason with the figure, offering a trade.
+     3. Run towards the glowing light, hoping to escape. }
+
      \`\`\`
 
 ### **Gameplay Flow:**  
@@ -80,25 +66,42 @@ Your role is to describe the world, set the scene, narrate events dynamically, a
         const result = await model.generateContent(initialPrompt);
         const response = await result.response;
         let text = response.text();
+        console.log(text);
+        const narration = parseNarration(text);
         const choices = parseChoices(text);
-
-        text = trimChoicesFromText(text, choices);
+        console.log(narration);
 
         conversationHistory += `${initialPrompt}\n${text}\n`;
 
-        return { text, choices };
+        return { narration, choices };
     } catch (error) {
         console.error("Error generating initial prompt:", error);
         return { text: "Error generating initial prompt.", choices: [] };
     }
 };
 
-function trimChoicesFromText(text, choices) {
-    let trimmedText = text;
+function parseNarration(responseText) {
+    // Match the narration text, even if it spans multiple lines
+    const narrationMatch = responseText.match(/Narration:\s*\{([\s\S]*?)\}/);
 
-    for (const choice of choices) {
-        const choiceRegex = new RegExp(`${choice.number}\\s${choice.description}`, 'g');
-        trimmedText = trimmedText.replace(choiceRegex, "").trim();
+    if (narrationMatch && narrationMatch[1]) {
+        return narrationMatch[1].trim();
     }
-    return trimmedText;
+
+    // Fallback: If the regex doesn't match, return a default message
+    return "No narration found.";
+}
+
+function parseChoices(responseText) {
+    const choicesMatch = responseText.match(/Choices:\s*([\s\S]*)/);
+    if (!choicesMatch) return [];
+
+    const choicesText = choicesMatch[1];
+    const choices = [];
+    const choiceRegex = /(\d+\.|[1-3]\.|[1-3]\)|[1-3]️⃣|\[\d+\])\s(.+?)(?=(\d+\.|[1-3]\.|[1-3]\)|[1-3]️⃣|\[\d+\]|$))/gs; // More robust choice regex
+    let match;
+    while ((match = choiceRegex.exec(choicesText)) !== null) {
+        choices.push({ number: match[1].trim(), description: match[2].trim() });
+    }
+    return choices;
 }
