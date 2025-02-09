@@ -5,11 +5,11 @@ function Statbox({stats}) {
   return (
     <div className= {styles.container}>
         <div className={styles.values}>
-            
-            <text>  
-                {stats[0]}
-            {stats[1]}
-            {stats[2]}</text>
+            {stats.map((stat, index) => (
+                <div key={index} className={styles.stat}>
+                    {stat}
+                </div>
+            ))}
         </div>
     </div>
   )
