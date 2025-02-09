@@ -107,7 +107,7 @@ function DungeonMaster() {
                     <OptionsBox choices={choices} onChoiceClick={handleChoiceClick} />
                     <CustomResponse input={customInput} setInput={setCustomInput} onSubmit={handleCustomResponseSubmit} />
                     {requiresDiceRoll && <DiceRoll onRoll={handleDiceRoll} />}
-                    {/* {<Statbox stats={userStats} />} */}
+                    <Statbox stats={userStats} />
                 </>
             )}
         </div>
