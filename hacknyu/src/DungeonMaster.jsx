@@ -50,6 +50,7 @@ function DungeonMaster() {
 
         try {
             const aiResponse = await getGeminiResponse(input, roll);
+            
             setResponse(aiResponse.narration);
             setChoices(aiResponse.choices);
 
@@ -77,15 +78,17 @@ function DungeonMaster() {
         if (!customInput) return;
 
         const aiResponse = await getGeminiResponse(customInput);
-        setResponse(aiResponse.text);
+        setResponse(aiResponse.narration);
         setChoices(aiResponse.choices);
         setCustomInput("");
     };
 
     const handleDiceRoll = (result) => {
         setDiceRollValue(result);
-        setRequiresDiceRoll(false); // Hide the DiceRoll component
         callGemini(currentChoice.description, result);
+        setTimeout(() => {
+            setRequiresDiceRoll(false); // Hide the DiceRoll component after the delay
+        }, 3000);
     };
 
     return (
