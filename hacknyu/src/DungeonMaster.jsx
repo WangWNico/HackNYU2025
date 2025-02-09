@@ -18,7 +18,7 @@ function DungeonMaster() {
     const [diceRollValue, setDiceRollValue] = useState(null); // Store dice roll value
     const [isLoading, setIsLoading] = useState(false);
     const [showDiceResult, setShowDiceResult] = useState(false);
-    const [userStats, setUserStats]= useState();
+    const [userStats, setUserStats]= useState([]);
 
 
     useEffect(() => {
