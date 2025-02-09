@@ -3,7 +3,7 @@ import styles from './CustomResponse.module.css';
 
 function CustomResponse({ input, setInput, onSubmit }) {
     return (
-        <div className={styles.container}>
+        <div className={styles.customResponse}>
             <div className={styles.textBox}>
                 <textarea
                     className={styles.textArea}
@@ -14,9 +14,7 @@ function CustomResponse({ input, setInput, onSubmit }) {
                     style={{ resize: 'none' }}
                 />
             </div>
-            <button className={styles.optionButton} onClick={onSubmit}> {/* Call onSubmit */}
-                Submit Custom Response
-            </button>
+            <button onClick={onSubmit}>Submit</button>
         </div>
     );
 }
